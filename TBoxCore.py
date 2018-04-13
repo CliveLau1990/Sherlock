@@ -19,12 +19,12 @@
 # Builtin libraries
 import os
 import time
-import commands
 
 # Third-party libraries
 from robot.api import logger
 
 # Customized libraries
+import Utils
 from MqttComm.MqttComm import MqttComm
 from CanComm.CanComm import CanComm
 from DesignPattern.Singleton import Singleton
@@ -56,18 +56,18 @@ class TBoxCore(Singleton):
     @staticmethod
     def on_clean_log():
         if TBoxCore.is_connected():
-            commands.getstatusoutput('adb logcat -c -b mcu -b mpu -b system -b tsp')
+            Utils.getstatusoutput('adb logcat -c -b mcu -b mpu -b system -b tsp')
 
     @staticmethod
     def is_connected():
-        (status, output) = commands.getstatusoutput('adb get-state')
+        (status, output) = Utils.getstatusoutput('adb get-state')
         if not status and output.find('device') != -1:
             return True
         return False
 
     @staticmethod
     def get_special_log(path, obj):
-        (status, output) = commands.getstatusoutput('adb logcat -d -b ' + obj)
+        (status, output) = Utils.getstatusoutput('adb logcat -d -b ' + obj)
         if not status:
             with open(path + '/' + obj + '.log', 'w') as f:
                 f.write(output)
